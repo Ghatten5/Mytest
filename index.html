@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Canva</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin: 50px; }
+    #canvas { border: 1px solid #ccc; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Mini Canva</h1>
+  <canvas id="canvas" width="600" height="400"></canvas>
+  <button id="download">Download as PNG</button>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFDD00';
+    ctx.fillRect(50, 50, 200, 100); // sample rectangle
+
+    document.getElementById('download').onclick = () => {
+      const link = document.createElement('a');
+      link.download = 'design.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+  </script>
+</body>
+</html>
