@@ -3,28 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <title>Mini Canva</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin: 50px; }
-    #canvas { border: 1px solid #ccc; margin-top: 20px; }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 </head>
-<body>
-  <h1>Mini Canva</h1>
-  <canvas id="canvas" width="600" height="400"></canvas>
-  <button id="download">Download as PNG</button>
+<body class="bg-gray-100 flex flex-col items-center p-6">
+  <h1 class="text-3xl font-bold mb-4">Mini Canva</h1>
+
+  <div class="flex space-x-4 mb-4">
+    <button id="addRect" class="px-4 py-2 bg-blue-500 text-white rounded">Add Rectangle</button>
+    <button id="addText" class="px-4 py-2 bg-green-500 text-white rounded">Add Text</button>
+    <input type="file" id="imgUpload" class="px-4 py-2 border rounded" />
+    <button id="download" class="px-4 py-2 bg-purple-500 text-white rounded">Download PNG</button>
+  </div>
+
+  <canvas id="canvas" width="800" height="600" class="border bg-white"></canvas>
 
   <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#FFDD00';
-    ctx.fillRect(50, 50, 200, 100); // sample rectangle
+    const canvas = new fabric.Canvas('canvas');
+
+    document.getElementById('addRect').onclick = () => {
+      const rect = new fabric.Rect({
+        left: 100,
+        top: 100,
+        fill: 'orange',
+        width: 150,
+        height: 100
+      });
+      canvas.add(rect);
+    }
+
+    document.getElementById('addText').onclick = () => {
+      const text = new fabric.Textbox('Your Text', {
+        left: 100,
+        top: 250,
+        fontSize: 24,
+        fill: 'black'
+      });
+      canvas.add(text);
+    }
+
+    document.getElementById('imgUpload').onchange = function(e) {
+      const reader = new FileReader();
+      reader.onload = function(f) {
+        const imgObj = new Image();
+        imgObj.src = f.target.result;
+        imgObj.onload = function() {
+          const image = new fabric.Image(imgObj);
+          image.set({ left: 100, top: 100, scaleX: 0.5, scaleY: 0.5 });
+          canvas.add(image);
+        }
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    }
 
     document.getElementById('download').onclick = () => {
       const link = document.createElement('a');
       link.download = 'design.png';
-      link.href = canvas.toDataURL();
+      link.href = canvas.toDataURL({ format: 'png', quality: 1 });
       link.click();
-    };
+    }
   </script>
 </body>
 </html>
